@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model WebTools.Models.DataSimulator
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -40,24 +42,50 @@
         </div>
     </header>
     @*<div class="form-group">
-        <label for="usr">Name:</label>
-        <input type="text" class="form-control" id="usr">
-    </div>*@
+            <label for="usr">Name:</label>
+            <input type="text" class="form-control" id="usr">
+        </div>*@
     <!-- Main Content -->
+    @using (Html.BeginForm())
+    {
+    @Html.ValidationSummary(true)
     <div class="container">
         <h2>Person Data</h2>
         <div class="form-group">
             <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
-                <div class="col"><label>Name</label><br /><input class="form-control" type="text" name="Name" id="Name" /></div>
-                <div class="col"><label>Birth Date</label><br /><input class="form-control" type="date" name="BirthDate" id="BirthDate" /></div>
-                <div class="col"><label>Retired Date</label><br /><input class="form-control" type="date" name="RetiredDate" id="RetiredDate" /></div>
+                <div class="col">
+                    <label>Name</label><br />
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+                <div class="col">
+                    <label>Birth Date</label><br />
+                    @Html.EditorFor(model => model.birthDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                    @Html.ValidationMessageFor(model => model.birthDate, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="col">
+                    <label>Retired Date</label><br />
+                    @Html.EditorFor(model => model.retiredDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                    @Html.ValidationMessageFor(model => model.retiredDate, "", new { @class = "text-danger" })
+
+                </div>
             </div>
         </div>
         <h2>Financial Data</h2>
         <div class="form-group">
             <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
-                <div class="col"><label>Monthly Value</label><br /><input class="form-control CurrencyInput" name="MonthlyValue" id="MonthlyValue" /></div>
-                <div class="col"><label>Annual Value</label><br /><input class="form-control CurrencyInput" name="AnnualValue" id="AnnualValue" /></div>
+                <div class="col">
+                    <label>Monthly Value</label><br />
+                    @Html.EditorFor(model => model.monthlyValue, "{0:c}", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.monthlyValue)
+
+                </div>
+                <div class="col">
+                    <label>Annual Value</label><br />
+                    @Html.EditorFor(model => model.annualValue, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.annualValue)
+                </div>
                 <div class="col-sm-3">
                     <label>Annual Profitability</label>
                     <select class="form-control" id="AnnualProfitability" name="AnnualProfitability">
@@ -69,9 +97,9 @@
 
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Simulate</button>
+        <p><input type="submit" value="Simulate" class="btn btn-primary" /></p>
     </div>
-
+    }
 
     <!-- Bootstrap core JavaScript -->
     <script src="~/Content/vendor/jquery/jquery.min.js"></script>
@@ -83,6 +111,10 @@
 </body>
 
 </html>
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval");
+    @Scripts.Render("~/bundles/inputmask")
+}
 <script>
     $('input.CurrencyInput').on('blur', function () {
         const value = this.value.replace(/,/g, '');
