@@ -18,14 +18,23 @@ namespace WebTools.Models
         [DataType(DataType.Date), DisplayFormat(DataFormatString = "{0:HH:mm dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime retiredDate { get; set; }
         [Required(ErrorMessage = "Required field!")]
-        [Range(10, 1000000, ErrorMessage = "Value between 10 and 1.000.000")]
+        
         public decimal monthlyValue { get; set; }
         [Required(ErrorMessage = "Required field!")]
-        [Range(10, 1000000, ErrorMessage = "Value between 10 and 1.000.000")]
+        
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
         public decimal annualValue { get; set; }
         [Required(ErrorMessage = "Required field!")]
         public int annualProfitability { get; set; }
+        public decimal benefitAmount { get; set; }
+        public class annualPayments
+        { 
+            public string descricao { get; set; }
+            public string monthYear { get; set; }
+            public decimal monthValue { get; set; }
+            public DateTime dateValue { get; set; }
+            
+        }
 
     }
 }

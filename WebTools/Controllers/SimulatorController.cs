@@ -25,12 +25,23 @@ namespace WebTools.Views
             while (dateToday <= simulator.retiredDate)
             {
                 monthlyValue += simulator.monthlyValue;
-                monthlyValue = Monetize(monthlyValue, dateToday, 1);
-                annualValue = Monetize(annualValue, dateToday, 1);
+                monthlyValue = Monetize(monthlyValue, dateToday, simulator.annualProfitability);
+                annualValue = Monetize(annualValue, dateToday, simulator.annualProfitability);
                 dateToday = dateToday.AddMonths(1);
+
+                //Result
+                if (annualValue > decimal.Zero)
+                {
+                    DataSimulator.annualPayments lista = new DataSimulator.annualPayments();
+                    lista.descricao = "Month Pay";
+                    lista.monthValue = monthlyValue;
+                    lista.dateValue = dateToday;
+                }
             }
             total = Math.Round(monthlyValue + annualValue, 2);
-            return View(total);
+            simulator.benefitAmount = Math.Round(total, 2);
+                        
+            return View(simulator);
         }
 
         private static int CalculateAge(DateTime birthDate) 
@@ -44,12 +55,12 @@ namespace WebTools.Views
             return age;
         }
 
-        private static decimal Monetize(decimal valor, DateTime bigDate , int perc) 
+        private static decimal Monetize(decimal valor, DateTime bigDate , decimal perc) 
         {
             decimal money = decimal.Zero;
             int monthRight = 12;
 
-            money = bigDate.Month == monthRight ? valor * (perc/100) : valor;
+            money = bigDate.Month == monthRight ? valor + valor * Convert.ToDecimal(perc/100) : valor;
                
             return money;
         }
