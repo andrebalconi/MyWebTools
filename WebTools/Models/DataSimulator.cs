@@ -21,8 +21,7 @@ namespace WebTools.Models
         
         public decimal monthlyValue { get; set; }
         [Required(ErrorMessage = "Required field!")]
-        
-        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+                
         public decimal annualValue { get; set; }
         [Required(ErrorMessage = "Required field!")]
         public int annualProfitability { get; set; }
@@ -36,5 +35,20 @@ namespace WebTools.Models
             
         }
 
+        public List<DropDownList> listPerc()
+        {
+            return new List<DropDownList>
+            {
+                new DropDownList {percentual = 1},
+                new DropDownList {percentual = 2},
+                new DropDownList {percentual = 3}
+            };
+
+        }
+
+        public int[] SelectedPercIds { get; set; }
+        public IEnumerable<SelectListItem> PercList { get; set; }
+
     }
+
 }

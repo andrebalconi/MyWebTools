@@ -1,5 +1,10 @@
 ﻿@model WebTools.Models.DataSimulator
 
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval");
+ 
+}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +19,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="~/Content/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="~/Scripts/angular.js"></script>
 
     <!-- Custom fonts for this template -->
     <link href="~/Content/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -48,67 +54,63 @@
     <!-- Main Content -->
     @using (Html.BeginForm())
     {
-    @Html.ValidationSummary(true)
-    <div class="container">
-        <h2>Person Data</h2>
-        <div class="form-group">
-            <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
-                <div class="col">
-                    <label>Name</label><br />
-                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Name)
-                </div>
-                <div class="col">
-                    <label>Birth Date</label><br />
-                    @Html.EditorFor(model => model.birthDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
-                    @Html.ValidationMessageFor(model => model.birthDate, "", new { @class = "text-danger" })
+@Html.ValidationSummary(true)
+                <div ng-app class="container">
+                    <h2>Person Data</h2>
+                    <div class="form-group">
+                        <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
+                            <div class="col">
+                                <label>Name</label><br />
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name)
+                            </div>
+                            <div class="col">
+                                <label>Birth Date</label><br />
+                                @Html.EditorFor(model => model.birthDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                                @Html.ValidationMessageFor(model => model.birthDate, "", new { @class = "text-danger" })
 
-                </div>
-                <div class="col">
-                    <label>Retired Date</label><br />
-                    @Html.EditorFor(model => model.retiredDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
-                    @Html.ValidationMessageFor(model => model.retiredDate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col">
+                                <label>Retired Date</label><br />
+                                @Html.EditorFor(model => model.retiredDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
+                                @Html.ValidationMessageFor(model => model.retiredDate, "", new { @class = "text-danger" })
 
-                </div>
-            </div>
-        </div>
-        <h2>Financial Data</h2>
-        <div class="form-group">
-            <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
-                <div class="col">
-                    <label>Monthly Value</label><br />
-                    @Html.EditorFor(model => model.monthlyValue, "{0:c}", new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.monthlyValue)
+                            </div>
+                        </div>
+                    </div>
+                    <h2>Financial Data</h2>
+                    <div class="form-group">
+                        <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
+                            <div class="col">
+                                <label>Monthly Value</label><br />
+                                @Html.EditorFor(model => model.monthlyValue, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
+                                @Html.ValidationMessageFor(model => model.monthlyValue)
 
-                </div>
-                <div class="col">
-                    <label>Annual Value</label><br />
-                    @Html.EditorFor(model => model.annualValue, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.annualValue)
-                </div>
-                <div class="col-sm-3">
-                    <label>Annual Profitability</label>
-                    <select class="form-control" id="AnnualProfitability" name="AnnualProfitability">
-                        <option value="1">1%</option>
-                        <option value="2">2%</option>
-                        <option value="3">3%</option>
-                    </select>
-                </div>
+                            </div>
+                            <div class="col">
+                                <label>Annual Value</label><br />
+                                @Html.EditorFor(model => model.annualValue, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
+                                @Html.ValidationMessageFor(model => model.annualValue)
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Annual Profitability</label>
+                                @Html.DropDownListFor(model => model.SelectedPercIds, Model.PercList, new { @class = "form-control" })
+                            </div>
 
-            </div>
-        </div>
-        <h2>Result</h2>
-        <div class="form-group">
-            <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
-                <div class="col">
-                    <label>Benefit Amount</label><br />
-                    @Model.benefitAmount
-                </div>
-            </div>
-        </div>
-        <p><input type="submit" value="Simulate" class="btn btn-primary" /></p>
-    </div>
-    }
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" ng-show="@Model.benefitAmount != 0">
+                        <h2>Result</h2>
+                        <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
+                            <div class="col">
+                                <label>Benefit Amount</label><br />
+                                @Model.benefitAmount
+                            </div>
+                        </div>
+                    </div>
+                    <p><input type="submit" value="Simulate" class="btn btn-primary" /></p>
+                </div>}
 
     <!-- Bootstrap core JavaScript -->
     <script src="~/Content/vendor/jquery/jquery.min.js"></script>
@@ -116,21 +118,20 @@
 
     <!-- Custom scripts for this template -->
     <script src="~/Content/js/clean-blog.min.js"></script>
+    
 
 </body>
 
 </html>
-@section Scripts{
-    @Scripts.Render("~/bundles/jqueryval");
-    @Scripts.Render("~/bundles/inputmask")
-}
+
 <script>
-    $('input.CurrencyInput').on('blur', function () {
-        const value = this.value.replace(/,/g, '');
-        this.value = parseFloat(value).toLocaleString('en-US', {
-            style: 'decimal',
-            maximumFractionDigits: 2,
-            minimumFractionDigits: 2
-        });
+
+    $('.decimalnumber').change(function () {
+        var num = new Number($(this).val());
+        if (isNaN(num)) {
+            // Its not a valid number
+            return;
+        }
+        $(this).val(num.toFixed(2));
     })
 </script>
