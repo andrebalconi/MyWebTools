@@ -49,6 +49,8 @@ namespace WebTools.Models
         public int[] SelectedPercIds { get; set; }
         public IEnumerable<SelectListItem> PercList { get; set; }
 
+        public int age { get; set; }
+
     }
 
 }

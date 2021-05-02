@@ -13,11 +13,6 @@ namespace WebTools.Controllers
             return View();
         }
 
-        public ActionResult Simulator()
-        {
-            return View();
-        }
-
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

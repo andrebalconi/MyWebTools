@@ -2,13 +2,13 @@
 
 @section Scripts{
     @Scripts.Render("~/bundles/jqueryval");
- 
+
 }
 
 <style>
     .label {
         font-weight: bold;
-        font-size:18px;
+        font-size: 18px;
     }
 </style>
 
@@ -41,14 +41,14 @@
 <body>
 
     <!-- Page Header -->
-    <header class="masthead" style="background-image: url('/Content/img/bluePig.jpg')">
+    <header class="masthead" style="background-image: url('/Content/img/calc.jpg')">
         <div class="overlay"></div>
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
                     <div class="page-heading">
-                        <h1>Simulator</h1>
-                        <span class="subheading">Future Financial Planning Tool.</span>
+                        <h1>Simulate your financing here</h1>
+                        <span class="subheading">I help you plan!</span>
                     </div>
                 </div>
             </div>
@@ -63,8 +63,9 @@
     {
 @Html.ValidationSummary(true)
                 <div ng-app class="container">
-                    <h2>Person Data</h2>
-                    <div class="form-group">
+                    <h2>Simulator Financial</h2>
+                    <h4>Under construction...</h4>
+                    <div class="form-group" ng-show="false">
                         <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
                             <div class="col">
                                 <label>Name</label><br />
@@ -85,42 +86,10 @@
                             </div>
                         </div>
                     </div>
-                    <h2>Financial Data</h2>
-                    <div class="form-group">
-                        <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
-                            <div class="col">
-                                <label>Monthly Value</label><br />
-                                @Html.EditorFor(model => model.monthlyValue, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
-                                @Html.ValidationMessageFor(model => model.monthlyValue)
 
-                            </div>
-                            <div class="col">
-                                <label>Annual Value</label><br />
-                                @Html.EditorFor(model => model.annualValue, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
-                                @Html.ValidationMessageFor(model => model.annualValue)
-                            </div>
-                            <div class="col-sm-3">
-                                <label>Annual Profitability</label>
-                                @Html.DropDownListFor(model => model.SelectedPercIds, Model.PercList, new { @class = "form-control" })
-                            </div>
 
-                        </div>
-                    </div>
-                    
-                    <div class="form-group" ng-show="@Model.benefitAmount != 0">
-                        <h2>Result</h2>
-                        <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
-                            <div class="col">
-                                <label>Benefit Amount</label><br />
-                                @Model.benefitAmount.ToString("C")
-                            </div>
-                            <div class="col">
-                                <label>Age in Retired</label><br />
-                                @Model.age<span> Years Old</span>
-                            </div>
-                        </div>
-                    </div>
-                    <p><input type="submit" value="Simulate" class="btn btn-primary" /></p>
+   
+                    <p><input type="submit" value="Simulate" class="btn btn-primary" ng-show="false"/></p>
                 </div>}
 
     <!-- Bootstrap core JavaScript -->
@@ -129,22 +98,17 @@
 
     <!-- Custom scripts for this template -->
     <script src="~/Content/js/clean-blog.min.js"></script>
-    
+
 
 </body>
 
 </html>
 
-<script>
-
-    $('.decimalnumber').change(function () {
+<script>$('.decimalnumber').change(function () {
         var num = new Number($(this).val());
         if (isNaN(num)) {
             // Its not a valid number
             return;
         }
         $(this).val(num.toFixed(2));
-    })
-       
-
-</script>
+    })</script>

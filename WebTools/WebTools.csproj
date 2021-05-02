@@ -120,10 +120,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\FinancyController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\DataFinancy.cs" />
     <Compile Include="Models\DataSimulator.cs" />
     <Compile Include="Models\DropDownList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1035,6 +1037,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Simulator\Simulator.cshtml" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\Financy\Financy.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

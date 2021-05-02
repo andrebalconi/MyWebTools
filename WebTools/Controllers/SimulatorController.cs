@@ -20,6 +20,7 @@ namespace WebTools.Views
         public ActionResult Simulator(DataSimulator simulator)
         {
             Index();
+            simulator.age = CalculateAge(simulator.birthDate, simulator.retiredDate);
             dateToday = DateTime.Today;
             annualValue = simulator.annualValue;
             //Evolution of income
@@ -58,12 +59,12 @@ namespace WebTools.Views
               
         }
 
-        private static int CalculateAge(DateTime birthDate) 
+        private static int CalculateAge(DateTime birthDate, DateTime Retired) 
         {
             int age = 0;
 
-            age = DateTime.Now.Year - birthDate.Year;
-            if (DateTime.Now.DayOfYear < birthDate.DayOfYear)
+            age = Retired.Year - birthDate.Year;
+            if (Retired.DayOfYear < birthDate.DayOfYear)
                 age = age - 1;
         
             return age;
