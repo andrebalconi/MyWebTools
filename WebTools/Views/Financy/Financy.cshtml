@@ -1,4 +1,4 @@
-﻿@model WebTools.Models.DataSimulator
+﻿@model WebTools.Models.DataFinancy
 
 @section Scripts{
     @Scripts.Render("~/bundles/jqueryval");
@@ -62,35 +62,55 @@
     @using (Html.BeginForm())
     {
 @Html.ValidationSummary(true)
-                <div ng-app class="container">
-                    <h2>Simulator Financial</h2>
-                    <h4>Under construction...</h4>
-                    <div class="form-group" ng-show="false">
-                        <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
-                            <div class="col">
-                                <label>Name</label><br />
-                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                                @Html.ValidationMessageFor(model => model.Name)
-                            </div>
-                            <div class="col">
-                                <label>Birth Date</label><br />
-                                @Html.EditorFor(model => model.birthDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
-                                @Html.ValidationMessageFor(model => model.birthDate, "", new { @class = "text-danger" })
+<div ng-app class="container">
+    <h2>Simulator Financial</h2>
+    <h3 style="color:red">under construction*</h3>
+    <div class="form-group">
+        <div class="d-flex align-items-start bg-light mb-3" style="height: 100px;">
+            <div class="col">
+                <label>Gross Value</label><br />
+                @Html.EditorFor(model => model.grossValue, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
+                @Html.ValidationMessageFor(model => model.grossValue)
+            </div>
+            <div class="col">
+                <label>Installment in Years</label><br />
+                @Html.DropDownListFor(model => model.SelectedPortionIds, Model.PortionList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SelectedPortionIds)
+            </div>
+            <div class="col">
+                <label>Tax Percentual</label><br />
+                @Html.DropDownListFor(model => model.SelectedPercIds, Model.PercList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SelectedPercIds)
+            </div>
+            <div class="col">
+                <label>Salary</label><br />
+                @Html.EditorFor(model => model.salary, new { htmlAttributes = new { @class = "form-control decimalnumber" } })
+                @Html.ValidationMessageFor(model => model.salary)
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group" ng-show="@Model.totalValue != 0">
+        <h2>Result</h2>
+        <div class="d-flex align-items-start bg-light sm-3" style="height: 100px;">
+            <div class="col">
+                <label>Installment Value</label><br />
+                @Model.valuePortion.ToString("C")
+            </div>
+            <div class="col">
+                <label>Total Financed</label><br />
+                @Model.totalValue.ToString("C")
+            </div>
+            <div class="col">
+                <label>Grant Date</label><br />
+                @Model.concessao.ToString("MM/dd/yyyy")
+            </div>
+        </div>
+    </div>
 
-                            </div>
-                            <div class="col">
-                                <label>Retired Date</label><br />
-                                @Html.EditorFor(model => model.retiredDate, new { htmlAttributes = new { @class = "form-control datetimepicker" } })
-                                @Html.ValidationMessageFor(model => model.retiredDate, "", new { @class = "text-danger" })
 
-                            </div>
-                        </div>
-                    </div>
-
-
-   
-                    <p><input type="submit" value="Simulate" class="btn btn-primary" ng-show="false"/></p>
-                </div>}
+    <p><input type="submit" value="Simulate" class="btn btn-primary" /></p>
+</div>}
 
     <!-- Bootstrap core JavaScript -->
     <script src="~/Content/vendor/jquery/jquery.min.js"></script>
@@ -104,7 +124,8 @@
 
 </html>
 
-<script>$('.decimalnumber').change(function () {
+<script>
+    $('.decimalnumber').change(function () {
         var num = new Number($(this).val());
         if (isNaN(num)) {
             // Its not a valid number
