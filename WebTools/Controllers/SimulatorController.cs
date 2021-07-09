@@ -5,93 +5,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebTools.Controllers;
 
-namespace WebTools.Views
-{
-    public class SimulatorController : Controller
-    {
-        public DateTime dateToday;
-        public decimal monthlyValue;
-        public decimal annualValue;
-        public int yearsOld;
-        public decimal total;
-        
-        // GET: Simulator
-        public ActionResult Simulator(DataSimulator simulator)
-        {
+namespace WebTools.Views {
+    public class SimulatorController : Controller {
+
+        public ActionResult Simulator(DataSimulator simulator) {
+            ClassSimulator cs = new ClassSimulator();
+
             Index();
-            simulator.age = CalculateAge(simulator.birthDate, simulator.retiredDate);
-            dateToday = DateTime.Today;
-            annualValue = simulator.annualValue;
+            simulator.age = cs.CalculateAge(simulator.birthDate, simulator.retiredDate);
+            cs.dateToday = DateTime.Today;
+            cs.annualValue = simulator.annualValue;
             //Evolution of income
-            while (dateToday <= simulator.retiredDate)
-            {
-                monthlyValue += simulator.monthlyValue;
-                monthlyValue = Monetize(monthlyValue, dateToday, Convert.ToInt32(simulator.SelectedPercIds[0]));
-                annualValue = Monetize(annualValue, dateToday, Convert.ToInt32(simulator.SelectedPercIds[0]));
-                dateToday = dateToday.AddMonths(1);
+            while (cs.dateToday <= simulator.retiredDate) {
+                cs.monthlyValue += simulator.monthlyValue;
+                cs.monthlyValue = cs.Monetize(cs.monthlyValue, cs.dateToday, Convert.ToInt32(simulator.SelectedPercIds[0]));
+                cs.annualValue += cs.dateToday.Month == 12 ? simulator.annualValue : 0;
+                cs.annualValue = cs.Monetize(cs.annualValue, cs.dateToday, Convert.ToInt32(simulator.SelectedPercIds[0]));
+                cs.dateToday = cs.dateToday.AddMonths(1);
 
                 //Result
-                if (annualValue > decimal.Zero)
-                {
+                if (cs.annualValue > decimal.Zero) {
                     DataSimulator.annualPayments lista = new DataSimulator.annualPayments();
                     lista.descricao = "Month Pay";
-                    lista.monthValue = monthlyValue;
-                    lista.dateValue = dateToday;
+                    lista.monthValue = cs.monthlyValue;
+                    lista.dateValue = cs.dateToday;
                 }
             }
-            total = Math.Round(monthlyValue + annualValue, 2);
-            simulator.benefitAmount = Math.Round(total, 2);
+            cs.total = Math.Round(cs.monthlyValue + cs.annualValue, 2);
+            simulator.benefitAmount = Math.Round(cs.total, 2);
 
 
             simulator.PercList = GetAllPercTypes();
-            if (simulator.SelectedPercIds != null)
-            {
+            if (simulator.SelectedPercIds != null) {
                 List<SelectListItem> selectedItems = simulator.PercList.Where(p => simulator.SelectedPercIds.Contains(int.Parse(p.Value))).ToList();
-                foreach (var Perc in selectedItems)
-                {
+                foreach (var Perc in selectedItems) {
                     Perc.Selected = true;
                     ViewBag.Message += Perc.Text + " | ";
                 }
             }
 
             return View(simulator);
-              
+
         }
 
-        private static int CalculateAge(DateTime birthDate, DateTime Retired) 
-        {
-            int age = 0;
-
-            age = Retired.Year - birthDate.Year;
-            if (Retired.DayOfYear < birthDate.DayOfYear)
-                age = age - 1;
-        
-            return age;
-        }
-
-        private static decimal Monetize(decimal valor, DateTime bigDate , decimal perc) 
-        {
-            decimal money = decimal.Zero;
-            int monthRight = 12;
-
-            money = bigDate.Month == monthRight ? valor + valor * Convert.ToDecimal(perc/100) : valor;
-               
-            return money;
-        }
-
-        public ActionResult Index()
-        {
-            var model = new DataSimulator
-            {
+        public ActionResult Index() {
+            var model = new DataSimulator {
                 SelectedPercIds = new[] { 2 },
                 PercList = GetAllPercTypes()
             };
             return View(model);
         }
 
-        public List<SelectListItem> GetAllPercTypes()
-        {
+        public List<SelectListItem> GetAllPercTypes() {
             List<SelectListItem> items = new List<SelectListItem>();
             items.Add(new SelectListItem { Text = "1%", Value = "1" });
             items.Add(new SelectListItem { Text = "2%", Value = "2" });

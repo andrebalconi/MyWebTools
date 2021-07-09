@@ -5,169 +5,153 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace WebTools.Controllers
-{
-    public class FinancyController : Controller
-    {
+namespace WebTools.Controllers {
+    public class FinancyController : Controller {
         // GET: Financy
-        public decimal portionValue;
-        public decimal fees;
-        public decimal totalTax;
-        public decimal valorEmprestimo;
-        public decimal valorParcela;
-        int month;
-        public ActionResult Financy(DataFinancy financy)
-        {
+        
+        public ActionResult Financy(DataFinancy financy) {
+
+            ClassFinancy cf = new ClassFinancy();
+
             financy.Result = new List<object>();
+            financy.message = "";
+            financy.PercList = GetAllPercTypes();
+            financy.PortionList = GetAllPortionTypes();
             Index();
-            if(financy.grossValue > 0) {
+            if (financy.grossValue > 0) {
                 decimal tresSalarios = financy.salary * 3;
                 decimal limite = 1000000.00M;
-                fees = financy.SelectedPercIds[0];
+                cf.fees = financy.SelectedPercIds[0];
 
-                decimal limiteEmprestimo = Math.Min(tresSalarios,limite);
+                decimal limiteEmprestimo = Math.Min(tresSalarios, limite);
 
-                valorEmprestimo = financy.grossValue;//valor
-                decimal valorParcela = obterValorParcela(valorEmprestimo,financy.SelectedPortionIds[0]*12);
+                cf.valorEmprestimo = financy.grossValue;//valor
+                decimal valorParcela = obterValorParcela(cf.valorEmprestimo, financy.SelectedPortionIds[0] * 12, cf.fees);
 
-                if (valorEmprestimo <= decimal.Zero)
-                {
+                if (valorParcela > (financy.salary * 0.3M)) {
+                    financy.message = "The amount of the installment cannot be greater than 30% ($" + financy.salary * 0.3M + ") of your salary!";
+                    return View(financy);
+                }
+
+                if (cf.valorEmprestimo <= decimal.Zero) {
                     return View(financy.message = "value Zero");
                 }
 
-                decimal creditoParticipante = valorEmprestimo;
-                
+                decimal creditoParticipante = cf.valorEmprestimo;
+
                 List<Object> DadosSimulator = new List<object>();
 
-                int numParcela = 0;
-                decimal jurosLista = 0;
-                decimal amortizacaoLista = 0;
-                decimal saldoAposParcela = creditoParticipante;
-                DateTime dataConcessao = LastDayOfMonth();
-                DateTime dataVencimento;
-                DateTime dataVencimentoParcela;
-                DateTime dataVencimentoPrimeiraParcela = DateTime.Today;
-                DateTime dataVencimentoUltimaParcela = DateTime.Today;
-                DateTime dataVencimentoParcelaAnterior = DateTime.Today;
-                int diasMesVencimento = 0;
+                cf.numParcela = 0;
+                cf.jurosLista = 0;
+                cf.amortizacaoLista = 0;
+                cf.saldoAposParcela = creditoParticipante;
+                cf.dataConcessao = LastDayOfMonth();
+                cf.dataVencimentoPrimeiraParcela = DateTime.Today;
+                cf.dataVencimentoUltimaParcela = DateTime.Today;
+                cf.dataVencimentoParcelaAnterior = DateTime.Today;
+                cf.diasMesVencimento = 0;
 
-                for (int i = 1; i <= financy.SelectedPortionIds[0] * 12; i++)
-                {
-                    numParcela = i;
-                    jurosLista = calcularJurosParcela(saldoAposParcela);
+                for (int i = 1; i <= financy.SelectedPortionIds[0] * 12; i++) {
+                    cf.numParcela = i;
+                    cf.jurosLista = calcularJurosParcela(cf.saldoAposParcela);
 
-                    if (i == (financy.SelectedPortionIds[0] * 12))
-                    {
-                        var diferenca = saldoAposParcela - (valorParcela - jurosLista);
-                        if (saldoAposParcela > 0)
-                            jurosLista -= diferenca;
+                    if (i == (financy.SelectedPortionIds[0] * 12)) {
+                        var diferenca = cf.saldoAposParcela - (valorParcela - cf.jurosLista);
+                        if (cf.saldoAposParcela > 0)
+                            cf.jurosLista -= diferenca;
                         else
-                            jurosLista += diferenca;
+                            cf.jurosLista += diferenca;
                     }
 
-                    amortizacaoLista = valorParcela - jurosLista;
-                    saldoAposParcela -= amortizacaoLista;
-
-                    if(i == 1)
-                        dataVencimentoParcela = Convert.ToDateTime("01/" + dataConcessao.Month + "/" + dataConcessao.Year);
-                    else
-                        dataVencimentoParcela = Convert.ToDateTime("01/" + dataVencimentoParcelaAnterior.Month + "/" + dataVencimentoParcelaAnterior.Year);
-
-                    dataVencimentoParcela = dataVencimentoParcela.AddMonths(1);
-                    diasMesVencimento = DateTime.DaysInMonth(dataVencimentoParcela.Year, dataVencimentoParcela.Month);
-                    dataVencimentoParcela = new DateTime(dataVencimentoParcela.Year, dataVencimentoParcela.Month, diasMesVencimento);
-                    dataVencimentoParcelaAnterior = dataVencimentoParcela;
+                    cf.amortizacaoLista = valorParcela - cf.jurosLista;
+                    cf.saldoAposParcela -= cf.amortizacaoLista;
 
                     if (i == 1)
-                        dataVencimentoPrimeiraParcela = dataVencimentoParcela;
+                        cf.dataVencimentoParcela = Convert.ToDateTime("01/" + cf.dataConcessao.Month + "/" + cf.dataConcessao.Year);
+                    else
+                        cf.dataVencimentoParcela = Convert.ToDateTime("01/" + cf.dataVencimentoParcelaAnterior.Month + "/" + cf.dataVencimentoParcelaAnterior.Year);
+
+                    cf.dataVencimentoParcela = cf.dataVencimentoParcela.AddMonths(1);
+                    cf.diasMesVencimento = DateTime.DaysInMonth(cf.dataVencimentoParcela.Year, cf.dataVencimentoParcela.Month);
+                    cf.dataVencimentoParcela = new DateTime(cf.dataVencimentoParcela.Year, cf.dataVencimentoParcela.Month, cf.diasMesVencimento);
+                    cf.dataVencimentoParcelaAnterior = cf.dataVencimentoParcela;
+
+                    if (i == 1)
+                        cf.dataVencimentoPrimeiraParcela = cf.dataVencimentoParcela;
 
                     if (i == (financy.SelectedPortionIds[0] * 12))
-                        dataVencimentoUltimaParcela = dataVencimentoParcela;
+                        cf.dataVencimentoUltimaParcela = cf.dataVencimentoParcela;
 
-                    DadosSimulator.Add(new
-                    {
+                    DadosSimulator.Add(new {
                         CreditoParticipante = String.Format("{0:C}", creditoParticipante),
                         ValorParcelas = String.Format("{0:C}", valorParcela),
-                        ValorEmprestimo = String.Format("{0:C}", valorEmprestimo),
+                        ValorEmprestimo = String.Format("{0:C}", cf.valorEmprestimo),
                         NumeroParcelas = financy.SelectedPortionIds[0] * 12,
-                        DataCredito = dataConcessao.ToString("MM/dd/yyyy"),
-                        VencimentoPrimeiraParcela = dataVencimentoPrimeiraParcela.ToString("MM/dd/yyyy"),
-                        VencimentoUltimaParcela = dataVencimentoUltimaParcela.ToString("MM/dd/yyyy"),
+                        DataCredito = cf.dataConcessao.ToString("MM/dd/yyyy"),
+                        VencimentoPrimeiraParcela = cf.dataVencimentoPrimeiraParcela.ToString("MM/dd/yyyy"),
+                        VencimentoUltimaParcela = cf.dataVencimentoUltimaParcela.ToString("MM/dd/yyyy"),
 
-                        ParcelaLista = numParcela,
-                        DataVencimentoParcelaLista = dataVencimentoParcela.ToString("MM/dd/yyyy"),
-                        JurosLista = String.Format("{0:C}",jurosLista),
-                        AmortizacaoLista = String.Format("{0:C}", amortizacaoLista),
-                        ValorParcelaLista = String.Format("{0:C}", valorParcela),
-                        SaldoParcelaLista = String.Format("{0:C}", saldoAposParcela)
+                        ParcelaLista = cf.numParcela,
+                        DataVencimentoParcelaLista = cf.dataVencimentoParcela.ToString("MM/dd/yyyy"),
+                        JurosLista = String.Format("{0:C}", cf.jurosLista),
+                        AmortizacaoLista = String.Format("{0:C}", cf.amortizacaoLista),
+                        ValorParcelaLista = String.Format("{0:C}", cf.valorParcela),
+                        SaldoParcelaLista = String.Format("{0:C}", cf.saldoAposParcela)
                     });
                     financy.valuePortion = valorParcela;
-                    financy.concessao = dataConcessao;
-                    financy.totalValue = valorEmprestimo;
+                    financy.concessao = cf.dataConcessao;
+                    financy.totalValue = cf.valorEmprestimo;
+
                 }
-                
+
             }
-
-
-            financy.PercList = GetAllPercTypes();
-            financy.PortionList = GetAllPortionTypes();
-
-            
+                        
             return View(financy);
         }
 
-        public ActionResult Index()
-        {
-            var model = new DataFinancy
-            {
+        public ActionResult Index() {
+            var model = new DataFinancy {
                 SelectedPercIds = new[] { 2 },
                 PercList = GetAllPercTypes(),
-                SelectedPortionIds = new[] {2},
+                SelectedPortionIds = new[] { 2 },
                 PortionList = GetAllPortionTypes()
             };
             return View(model);
         }
 
-        public List<SelectListItem> GetAllPercTypes()
-        {
+        public List<SelectListItem> GetAllPercTypes() {
             List<SelectListItem> items = new List<SelectListItem>();
-            for(int i = 1; i < 90; i++)
-            {
-                items.Add(new SelectListItem { Text = i.ToString()+"%", Value = i.ToString() });
+            for (int i = 1; i < 90; i++) {
+                items.Add(new SelectListItem { Text = i.ToString() + "%", Value = i.ToString() });
             }
-                        
+
             return items;
         }
-        public List<SelectListItem> GetAllPortionTypes()
-        {
+        public List<SelectListItem> GetAllPortionTypes() {
             List<SelectListItem> items = new List<SelectListItem>();
-            for (int i = 5; i < 31; i++)
-            {
+            for (int i = 5; i < 31; i++) {
                 items.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
             }
 
             return items;
         }
 
-        public decimal obterValorParcela(decimal valorSolicitado, int prazo)
-        {
-            decimal EncargosMensais = Math.Round(encargosMensais(),13);
+        public decimal obterValorParcela(decimal valorSolicitado, int prazo, decimal fees) {
+            decimal EncargosMensais = Math.Round(encargosMensais(fees), 13);
 
             var valorParcela = Math.Round(Convert.ToDecimal(valorSolicitado * EncargosMensais) / Convert.ToDecimal((1 - Math.Pow((Convert.ToDouble(1 + EncargosMensais)), -1 * prazo))), 2);
 
             return valorParcela > decimal.Zero ? valorParcela : 0;
         }
 
-        public decimal encargosMensais() 
-        {
+        public decimal encargosMensais(decimal fees) {
             var juros = fees;
             var encargosMensais = juros / 100;
 
             return encargosMensais;
         }
 
-        public decimal calcularJurosParcela(decimal saldoAposParcela)
-        {
+        public decimal calcularJurosParcela(decimal saldoAposParcela) {
             decimal tJuros = 0.05M;
             var encargosMensais = calcularEncargosMensais(tJuros);
             var jurosParcela = saldoAposParcela * encargosMensais;
@@ -175,16 +159,14 @@ namespace WebTools.Controllers
             return jurosParcela;
         }
 
-        public decimal calcularEncargosMensais(decimal jurosParcela)
-        {
+        public decimal calcularEncargosMensais(decimal jurosParcela) {
             decimal juros = jurosParcela;
             decimal encargosMensais = juros / 100;
 
             return encargosMensais;
         }
 
-        public static DateTime LastDayOfMonth()
-        {
+        public static DateTime LastDayOfMonth() {
             DateTime dt = DateTime.Today;
             DateTime ss = new DateTime(dt.Year, dt.Month, 1);
             return ss.AddMonths(1).AddDays(-1);
