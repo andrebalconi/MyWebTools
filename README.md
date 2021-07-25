@@ -1,5 +1,5 @@
 # WebTools -  Andre Balconi
 
--[Online demo of the application](http://toolsweb.gearhostpreview.com/)
+-[Online demo of the application]()
 
 # WebTools -  Andre Balconi
