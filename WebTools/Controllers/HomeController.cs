@@ -26,5 +26,12 @@ namespace WebTools.Controllers
 
             return View();
         }
+
+        public ActionResult Moment()
+        {
+            ViewBag.Message = "Break Moment with Music";
+
+            return View();
+        }
     }
 }
