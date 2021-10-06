@@ -1,4 +1,59 @@
 ﻿<!DOCTYPE html>
+<style>
+    header {
+        position: relative;
+        background-color: black;
+        height: 75vh;
+        min-height: 25rem;
+        width: 100%;
+        overflow: hidden;
+    }
+
+        header video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 0;
+            -ms-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        header .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        header .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+    /* Media Query for devices withi coarse pointers and no hover functionality */
+
+    /* This will use a fallback image instead of a video for devices that commonly do not support the HTML5 video element */
+
+    @@media (pointer: coarse) and (hover: none) {
+        header {
+            background: url('https://source.unsplash.com/XT5OInaElMw/1600x900') black no-repeat center center scroll;
+        }
+
+            header video {
+                display: none;
+            }
+    }
+</style>
 <html lang="en">
 
 <head>
@@ -7,7 +62,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-
 
     <!-- Bootstrap core CSS -->
     <link href="~/Content/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -18,30 +72,35 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
+    
     <!-- Custom styles for this template -->
     <link href="~/Content/css/clean-blog.min.css" rel="stylesheet">
 
 </head>
 
 <body>
-
     <!-- Page Header -->
-    <header class="masthead" style="background-image: url('/Content/img/peg_relax.jpg')">
+    <header>
+
+        <!-- This div is  intentionally blank. It creates the transparent black overlay over the video which you can modify in the CSS -->
         <div class="overlay"></div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-10 col-md-10 mx-auto">
-                    <div class="page-heading">
-                        <h1>Break Moment with Music</h1>
-                        <span class="subheading"></span>
-                    </div>
+
+        <!-- The HTML5 video element that will create the background video on the header -->
+        <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+            <source src="~/Content/movies/MomentOne.mp4" type="video/mp4">
+        </video>
+
+        <!-- The header content -->
+        <div class="container h-100">
+            <div class="d-flex h-100 text-center align-items-center">
+                <div class="w-100 text-white">
+                    <h1 class="display-3">Break Moment with Music</h1>
+                    <p class="lead mb-0">Enjoy!</p>
                 </div>
             </div>
         </div>
     </header>
+    <br />
     <!--Movie Panel-->
     <div class="row">
         <div class="col-lg-5 col-md-10 mx-auto">
