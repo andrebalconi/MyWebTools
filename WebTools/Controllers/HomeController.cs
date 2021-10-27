@@ -33,5 +33,12 @@ namespace WebTools.Controllers
 
             return View();
         }
+
+        public ActionResult MusicService() 
+        {
+            ViewBag.Message = "Search your Music";
+
+            return View();
+        }
     }
 }
